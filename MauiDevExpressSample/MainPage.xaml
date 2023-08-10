@@ -1,41 +1,104 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:editor="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:scheduler="clr-namespace:DevExpress.Maui.Scheduler;assembly=DevExpress.Maui.Scheduler"
+             xmlns:datagrid="clr-namespace:DevExpress.Maui.DataGrid;assembly=DevExpress.Maui.DataGrid"
              x:Class="MauiDevExpressSample.MainPage">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
+    <controls:TabView>
+        <controls:TabView.Items>
+            <!-- Default new .NET MAUI template -->
+            <controls:TabViewItem HeaderText="Home">
+                <ScrollView>
+                    <VerticalStackLayout
+                        Spacing="25"
+                        Padding="30,0"
+                        VerticalOptions="Center">
 
-            <Image
-                Source="dotnet_bot.png"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
+                        <Image
+                            Source="dotnet_bot.png"
+                            SemanticProperties.Description="Cute dot net bot waving hi to you!"
+                            HeightRequest="200"
+                            HorizontalOptions="Center" />
 
-            <Label
-                Text="Hello, World!"
-                SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
-                HorizontalOptions="Center" />
+                        <Label
+                            Text="Hello, World!"
+                            SemanticProperties.HeadingLevel="Level1"
+                            FontSize="32"
+                            HorizontalOptions="Center" />
 
-            <Label
-                Text="Welcome to .NET Multi-platform App UI"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
-                FontSize="18"
-                HorizontalOptions="Center" />
+                        <Label
+                            Text="Welcome to .NET Multi-platform App UI"
+                            SemanticProperties.HeadingLevel="Level2"
+                            SemanticProperties.Description="Welcome to dot net Multi platform App U I"
+                            FontSize="18"
+                            HorizontalOptions="Center" />
 
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Center" />
+                        <Button
+                            x:Name="CounterBtn"
+                            Text="Click me"
+                            SemanticProperties.Hint="Counts the number of times you click"
+                            HorizontalOptions="Center" />
 
-        </VerticalStackLayout>
-    </ScrollView>
-
+                    </VerticalStackLayout>
+                </ScrollView>
+            </controls:TabViewItem>
+            
+            <!-- Editors -->
+            <controls:TabViewItem HeaderText="Edits">
+                <VerticalStackLayout Spacing="10">
+                    <!-- TokenEdit -->
+                    <editor:TokenEdit ItemsSource="{Binding MyItems}" HeightRequest="100" />
+                    
+                    <!-- AutoCompleteEdit -->
+                    <editor:AutoCompleteEdit ItemsSource="{Binding MyItems}" HeightRequest="100">
+                        <editor:AutoCompleteEdit.ItemsSourceProvider>
+                            <editor:AsyncItemsSourceProvider ItemsRequested="OnDelegateRequested" CharacterCountThreshold="3" />
+                        </editor:AutoCompleteEdit.ItemsSourceProvider>
+                    </editor:AutoCompleteEdit>
+                </VerticalStackLayout>
+            </controls:TabViewItem>
+            
+            <!-- Calendar -->
+            <controls:TabViewItem HeaderText="Calendar">
+                <editor:DXCalendar MaxDate="2022-01-01" SelectedDate="2021-09-10" />
+            </controls:TabViewItem>
+            
+            <!-- Scheduler -->
+            <controls:TabViewItem HeaderText="Scheduler">
+                <scheduler:WorkWeekView>
+                    <scheduler:WorkWeekView.DataStorage>
+                        <scheduler:SchedulerDataStorage x:Name="storage">
+                            <scheduler:SchedulerDataStorage.DataSource>
+                                <scheduler:DataSource AppointmentsSource="{Binding Appointments}">
+                                    <scheduler:DataSource.AppointmentMappings>
+                                        <scheduler:AppointmentMappings 
+                                            Id="Id" 
+                                            Start="StartTime" 
+                                            End="EndTime" 
+                                            Subject="Subject"
+                                            LabelId="LabelId"
+                                            Location="Location"/>
+                                    </scheduler:DataSource.AppointmentMappings>
+                                </scheduler:DataSource>
+                            </scheduler:SchedulerDataStorage.DataSource>
+                        </scheduler:SchedulerDataStorage>
+                    </scheduler:WorkWeekView.DataStorage>
+                </scheduler:WorkWeekView>
+            </controls:TabViewItem>
+            
+            <!-- DataGrid -->
+            <controls:TabViewItem HeaderText="DataGrid">
+                <datagrid:DataGridView ItemsSource="{Binding Monkeys}" AllowDragDropRows="True" EditorShowMode="DoubleTap">
+                    <datagrid:DataGridView.Columns>
+                        <datagrid:ImageColumn FieldName="Image" />
+                        <datagrid:TextColumn FieldName="Name" />
+                        <datagrid:TextColumn FieldName="Location" />
+                    </datagrid:DataGridView.Columns>
+                </datagrid:DataGridView>
+            </controls:TabViewItem>
+        </controls:TabView.Items>
+    </controls:TabView>
 </ContentPage>

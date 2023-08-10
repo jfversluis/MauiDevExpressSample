@@ -1,24 +1,58 @@
-﻿namespace MauiDevExpressSample;
+﻿using DevExpress.Maui.Editors;
+using System.Collections.ObjectModel;
+using System.Net.Http.Json;
+
+namespace MauiDevExpressSample;
 
 public partial class MainPage : ContentPage
 {
-	int count = 0;
+    private readonly HttpClient httpClient = new();
 
-	public MainPage()
+    public ObservableCollection<Monkey> Monkeys { get; set; } = new();
+
+    public ObservableCollection<string> MyItems { get; set; } = new()
+	{
+		"Gerald",
+		"YouTube",
+		"Subscribe",
+		"DevExpress"
+	};
+
+    public ObservableCollection<Appointment> Appointments { get; set; } = new()
+    {
+        new()
+        {
+            Id = 1337,
+            Subject = "Subscribe to Gerald",
+            StartTime = new DateTime(2023, 08, 08, 13, 37, 0),
+            EndTime = new DateTime(2023, 08, 08, 16, 0, 0),
+        }
+    };
+
+    public MainPage()
 	{
 		InitializeComponent();
-	}
 
-	private void OnCounterClicked(object sender, EventArgs e)
-	{
-		count++;
+        LoadMonkeys();
 
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
-		else
-			CounterBtn.Text = $"Clicked {count} times";
+		BindingContext = this;
+    }
+    private async Task LoadMonkeys()
+    {
+        var monkeys = await httpClient.GetFromJsonAsync<Monkey[]>("https://montemagno.com/monkeys.json");
+        Monkeys.Clear();
 
-		SemanticScreenReader.Announce(CounterBtn.Text);
-	}
+        foreach (Monkey monkey in monkeys)
+        {
+            Monkeys.Add(monkey);
+        }
+    }
+
+    void OnDelegateRequested(object sender, ItemsRequestEventArgs e)
+    {
+        e.Request = () => {
+            return MyItems.Where(i => i.StartsWith(e.Text, StringComparison.CurrentCultureIgnoreCase)).ToList();
+        };
+    }
 }
 
